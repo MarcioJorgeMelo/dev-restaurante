@@ -1,13 +1,19 @@
+"use client";
+
 import { OrderProps } from "@/lib/order.type";
 import styles from "./styles.module.scss";
 import { RefreshCcw } from "lucide-react";
 import { ModalOrder } from "../modal";
+import { OrderContext } from "@/providers/order";
+import { use } from "react";
 
 interface OrderComponentProps {
   orders: OrderProps[];
 }
 
 export function Orders({ orders }: OrderComponentProps) {
+  const { isOpen, onRequestOpen, onRequestClose } = use(OrderContext);
+
   return (
     <>
       <main className={styles.container}>
@@ -33,7 +39,7 @@ export function Orders({ orders }: OrderComponentProps) {
         </section>
       </main>
 
-      <ModalOrder />
+      {isOpen && <ModalOrder />}
     </>
   );
 }
