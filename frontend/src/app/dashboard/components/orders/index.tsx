@@ -6,6 +6,8 @@ import { RefreshCcw } from "lucide-react";
 import { ModalOrder } from "../modal";
 import { OrderContext } from "@/providers/order";
 import { use } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface OrderComponentProps {
   orders: OrderProps[];
@@ -13,9 +15,15 @@ interface OrderComponentProps {
 
 export function Orders({ orders }: OrderComponentProps) {
   const { isOpen, onRequestOpen } = use(OrderContext);
+  const router = useRouter();
 
   async function handleDetailOrder(order_id: string) {
     await onRequestOpen(order_id);
+  }
+
+  function handleRefresh() {
+    router.refresh();
+    toast.success("Pedidos atualizados com sucesso!");
   }
 
   return (
@@ -24,13 +32,13 @@ export function Orders({ orders }: OrderComponentProps) {
         <section className={styles.containerHeader}>
           <h1>Últimos pedidos</h1>
 
-          <button>
+          <button onClick={handleRefresh}>
             <RefreshCcw size={24} color="#3fffa3" />
           </button>
         </section>
 
         <section className={styles.listOrders}>
-          {orders ? (
+          {orders.length > 0 ? (
             orders.map((order) => (
               <button
                 key={order.id}
@@ -42,7 +50,9 @@ export function Orders({ orders }: OrderComponentProps) {
               </button>
             ))
           ) : (
-            <p>Nenhum pedido em aberto no momento : (</p>
+            <span className={styles.emptyItem}>
+              Nenhum pedido em aberto no momento : (
+            </span>
           )}
         </section>
       </main>
