@@ -12,7 +12,11 @@ interface OrderComponentProps {
 }
 
 export function Orders({ orders }: OrderComponentProps) {
-  const { isOpen, onRequestOpen, onRequestClose } = use(OrderContext);
+  const { isOpen, onRequestOpen } = use(OrderContext);
+
+  async function handleDetailOrder(order_id: string) {
+    await onRequestOpen(order_id);
+  }
 
   return (
     <>
@@ -28,7 +32,11 @@ export function Orders({ orders }: OrderComponentProps) {
         <section className={styles.listOrders}>
           {orders ? (
             orders.map((order) => (
-              <button key={order.id} className={styles.orderItem}>
+              <button
+                key={order.id}
+                className={styles.orderItem}
+                onClick={() => handleDetailOrder(order.id)}
+              >
                 <div className={styles.tag} />
                 <span>Mesa {order.table}</span>
               </button>
