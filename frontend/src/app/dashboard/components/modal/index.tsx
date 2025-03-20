@@ -2,6 +2,7 @@
 
 import { X } from "lucide-react";
 import styles from "./styles.module.scss";
+import Image from "next/image";
 import { use } from "react";
 import { OrderContext } from "@/providers/order";
 import { calculateTotalOrder } from "@/lib/helper";
@@ -35,8 +36,8 @@ export function ModalOrder() {
 
           {order.map((item, index) => (
             <section key={item.id} className={styles.item}>
-              <img
-                src={`http://localhost:3333/files/${order[index].product.banner}`}
+              <Image
+                src={item.product.banner}
                 alt={`${order[index].product.description}`}
                 width={30}
                 height={30}
