@@ -8,7 +8,6 @@ import { CreateCategoryController } from "./controllers/category/CreateCategoryC
 import { ListCategoriesController } from "./controllers/category/ListCategoriesController";
 import { CreateProductController } from "./controllers/product/CreateProductController";
 import uploadConfig from "./config/multer";
-import { ListByCategoryControler } from "./controllers/product/ListByCategoryController";
 import { CreateOrderController } from "./controllers/order/CreateOrderController";
 import { CloseOrderController } from "./controllers/order/CloseOrderController";
 import { AddItemController } from "./controllers/order/AddItemController";
@@ -17,6 +16,7 @@ import { SendOrderController } from "./controllers/order/SendOrderController";
 import { ListOrdersController } from "./controllers/order/ListOrdersController";
 import { DetailOrderController } from "./controllers/order/DetailOrderController";
 import { FinishOrderController } from "./controllers/order/FinishOrderController";
+import { ListByCategoryControler } from "./controllers/product/ListByCategoryController";
 
 const router = Router();
 
