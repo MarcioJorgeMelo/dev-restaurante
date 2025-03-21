@@ -1,4 +1,5 @@
 import prismaClient from "../../prisma";
+// list products
 
 interface ProductRequest {
   category_id: string;
