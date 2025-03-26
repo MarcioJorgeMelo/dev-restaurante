@@ -1,16 +1,18 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  Modal,
 } from "react-native";
 
 import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
 
 import { Feather } from "@expo/vector-icons";
 import { api } from "../../services/api";
+import { ModalPicker } from "../../components/ModalPicker";
 
 type RouteDetailParams = {
   Order: {
@@ -19,12 +21,38 @@ type RouteDetailParams = {
   };
 };
 
+export type CategoryProps = {
+  id: string;
+  name: string;
+};
+
 type OrderRouteProps = RouteProp<RouteDetailParams, "Order">;
 
 export default function Order() {
   const route = useRoute<OrderRouteProps>();
 
   const navigation = useNavigation();
+
+  const [category, setCategory] = useState<CategoryProps[] | []>([]);
+  const [categorySelected, setCategorySelected] = useState<CategoryProps>();
+  const [amount, setAmount] = useState("1");
+  const [modalCategoryVisible, setModalCategoryVisible] = useState(false);
+
+  useEffect(() => {
+    async function loadInfo() {
+      try {
+        const response = await api.get("/category");
+
+        setCategory(response.data);
+
+        setCategorySelected(response.data[0]);
+      } catch (error) {
+        console.log("Erro ao buscar as categorias ", error);
+      }
+    }
+
+    loadInfo();
+  }, []);
 
   async function handleCloseOrder() {
     try {
@@ -40,6 +68,10 @@ export default function Order() {
     }
   }
 
+  function handleChangeCategory(item: CategoryProps) {
+    setCategorySelected(item);
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -49,9 +81,14 @@ export default function Order() {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.input}>
-        <Text style={{ color: "#FFF" }}>Pizzas</Text>
-      </TouchableOpacity>
+      {category.length !== 0 && (
+        <TouchableOpacity
+          style={styles.input}
+          onPress={() => setModalCategoryVisible(true)}
+        >
+          <Text style={{ color: "#FFF" }}>{categorySelected?.name}</Text>
+        </TouchableOpacity>
+      )}
 
       <TouchableOpacity style={styles.input}>
         <Text style={{ color: "#FFF" }}>Pizza de calabresa</Text>
@@ -63,7 +100,8 @@ export default function Order() {
         <TextInput
           placeholderTextColor="#F0F0F0"
           keyboardType="numeric"
-          value="1"
+          value={amount}
+          onChangeText={setAmount}
           style={[styles.input, { width: "60%", textAlign: "center" }]}
         />
       </View>
@@ -77,6 +115,18 @@ export default function Order() {
           <Text style={styles.buttonText}>Avançar</Text>
         </TouchableOpacity>
       </View>
+
+      <Modal
+        transparent={true}
+        visible={modalCategoryVisible}
+        animationType="fade"
+      >
+        <ModalPicker
+          handleCloseModal={() => setModalCategoryVisible(false)}
+          options={category}
+          selectedItem={handleChangeCategory}
+        />
+      </Modal>
     </View>
   );
 }
