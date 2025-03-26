@@ -11,6 +11,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StackParamsList } from "../../routes/app.routes";
+import { api } from "../../services/api";
 
 export default function Dashboard() {
   const navigation =
@@ -23,7 +24,20 @@ export default function Dashboard() {
       return;
     }
 
-    navigation.navigate("Order", { number: table, order_id: "" });
+    try {
+      const response = await api.post("/order", {
+        table: Number(table),
+      });
+
+      navigation.navigate("Order", {
+        number: table,
+        order_id: response.data.id,
+      });
+
+      setTable("");
+    } catch (error) {
+      console.log("Erro ao criar a mesa", error);
+    }
   }
 
   return (
